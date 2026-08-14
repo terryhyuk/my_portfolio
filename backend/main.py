@@ -1,17 +1,29 @@
 from fastapi import FastAPI
-from sqlalchemy import create_engine 
-from sqlalchemy.orm import sessionmaker
-
+from fastapi.middleware.cors import CORSMiddleware
+import models
 from database import engine
+from routers import user, guestbook, visit, portfolio
+
+# Create database tables
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+# CORS settings for frontend communication (Needed for frontend to call API)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Recommended to change to the deployment domain later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Register routers
+app.include_router(user.router)
+app.include_router(guestbook.router)
+app.include_router(visit.router)
+app.include_router(portfolio.router)
+
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
-
-try:
-    with engine.connect() as connection:
-        print("성공")
-except Exception as e:
-    print(f"❌ 실패... 에러 내용: {e}")
+    return {"message": "Welcome to my portfolio backend!"}
