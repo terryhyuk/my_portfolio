@@ -5,6 +5,7 @@ from jose import JWTError, jwt
 from typing import List
 import models, schemas
 from database import get_db
+from auth import get_current_admin
 
 # OAuth2 scheme to extract token from the Authorization header
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/login")

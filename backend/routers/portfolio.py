@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 import models, schemas
 from database import get_db
-from routers.user import get_current_admin
+from auth import get_current_admin
 
 router = APIRouter(
     prefix="/portfolio",
