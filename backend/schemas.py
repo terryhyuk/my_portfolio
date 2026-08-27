@@ -40,6 +40,7 @@ class PortfolioCreate(BaseModel):
     title: str
     story: Optional[str] = None
     store_link: Optional[str] = None
+    image_url: Optional[str] = None
 
 # 4. 포트폴리오 조회(Response)할 때 반환하는 데이터 (DB 컬럼명 number와 일치시키기!)
 class PortfolioResponse(BaseModel):
