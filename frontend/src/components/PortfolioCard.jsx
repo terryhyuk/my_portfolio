@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function PortfolioCard({ number, title }) {
+export default function PortfolioCard({ number, title, imageUrl }) {
     const navigate = useNavigate();
 
     return (
@@ -22,7 +22,6 @@ export default function PortfolioCard({ number, title }) {
             onMouseOver={(e) => e.currentTarget.style.borderColor = '#000'}
             onMouseOut={(e) => e.currentTarget.style.borderColor = '#ccc'}
         >
-            {/* 앱 아이콘 자리 */}
             <div style={{ 
                 width: '40px', 
                 height: '40px', 
@@ -31,25 +30,15 @@ export default function PortfolioCard({ number, title }) {
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center',
-                fontSize: '20px'
+                overflow: 'hidden'
             }}>
-                📱
+                {imageUrl ? (
+                    <img src={imageUrl} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                    <span style={{ fontSize: '20px' }}>📱</span>
+                )}
             </div>
-            {/* 앱 이름 */}
             <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>{title}</h3>
         </div>
     );
 }
-// export default function PortfolioCard({ title, story, link }) {
-//     return (
-//         <div style={{ border: '1px dashed #ccc', padding: '15px', marginBottom: '10px' }}>
-//             <h3 style={{ margin: '0 0 5px 0' }}>{title}</h3>
-//             <p style={{ margin: '0 0 5px 0', fontSize: '14px' }}>{story}</p>
-//             {link && (
-//                 <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: '#0066cc' }}>
-//                     [Store Link]
-//                 </a>
-//             )}
-//         </div>
-//     );
-// }

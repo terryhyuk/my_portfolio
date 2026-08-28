@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List
 import models, schemas
 from database import get_db
-from auth import get_current_admin
+from .auth import get_current_admin
+# from backend.routers.auth import get_current_admin
 
 router = APIRouter(
     prefix="/portfolio",
@@ -28,7 +29,8 @@ def create_portfolio(
         user_id=1, # 관리자 ID 고정
         title=payload.title,
         story=payload.story,
-        store_link=payload.store_link
+        store_link=payload.store_link,
+        image_url=payload.image_url
     )
     db.add(new_portfolio)
     db.commit()
@@ -49,3 +51,25 @@ def delete_portfolio(
     db.delete(target)
     db.commit()
     return {"message": "Portfolio entry successfully deleted."}
+
+# 4. Update a portfolio (Update - Admin only!)
+@router.put("/{number}", response_model=schemas.PortfolioResponse)
+def update_portfolio(
+    number: int, 
+    payload: schemas.PortfolioCreate, 
+    db: Session = Depends(get_db),
+    admin_id: str = Depends(get_current_admin)
+):
+    target = db.query(models.Portfolio).filter(models.Portfolio.number == number).first()
+    if not target:
+        raise HTTPException(status_code=404, detail="Portfolio not found.")
+    
+    # 전달받은 데이터로 필드 업데이트
+    target.title = payload.title
+    target.story = payload.story
+    target.store_link = payload.store_link
+    target.image_url = payload.image_url
+    
+    db.commit()
+    db.refresh(target)
+    return target

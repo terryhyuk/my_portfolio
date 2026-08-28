@@ -26,8 +26,7 @@ class Portfolio(Base):
     story = Column(Text)
     store_link = Column(String(255))
     created_at = Column(TIMESTAMP, server_default=func.now())
-    image_url = Column(String, nullable=True)
-    
+    image_url = Column(String(255))
     user = relationship("User", back_populates="portfolios")
 
 class VisitLog(Base):

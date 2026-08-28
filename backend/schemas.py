@@ -49,6 +49,7 @@ class PortfolioResponse(BaseModel):
     story: Optional[str] = None
     store_link: Optional[str] = None
     created_at: Optional[datetime] = None
+    image_url: Optional[str] = None
 
     class Config:
         from_attributes = True
