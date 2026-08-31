@@ -9,7 +9,7 @@ export default function PortfolioDetail() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/portfolio/`)
+        fetch(`https://my-portfolio-ganv.onrender.com/portfolio/`)
             .then((res) => res.json())
             .then((data) => {
                 const found = data.find((item) => item.number === Number(id));
@@ -96,7 +96,7 @@ export default function PortfolioDetail() {
 
 //     // 백엔드에서 해당 번호의 상세 데이터를 가져오기
 //     useEffect(() => {
-//         fetch(`http://127.0.0.1:8000/portfolio/`)
+//         fetch(`https://my-portfolio-ganv.onrender.com/portfolio/`)
 //             .then((res) => res.json())
 //             .then((data) => {
 //                 // 전체 목록 중에서 현재 id(number)와 일치하는 아이템 찾기

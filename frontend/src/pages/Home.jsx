@@ -40,17 +40,17 @@ export default function Home() {
 
     // Fetch initial data from server API
     const fetchData = () => {
-        fetch('http://127.0.0.1:8000/portfolio/')
+        fetch('https://my-portfolio-ganv.onrender.com/portfolio/')
             .then((res) => res.json())
             .then((data) => { setPortfolios(data); setLoading(false); })
             .catch((err) => { console.error('Portfolio fetch error:', err); setLoading(false); });
 
-        fetch('http://127.0.0.1:8000/visit/')
+        fetch('https://my-portfolio-ganv.onrender.com/visit/')
             .then((res) => res.json())
             .then((data) => { setVisitCount(typeof data === 'number' ? data : (data.total || data.length || 0)); })
             .catch((err) => { console.error('Visit count fetch error:', err); });
 
-        fetch('http://127.0.0.1:8000/user/about-web')
+        fetch('https://my-portfolio-ganv.onrender.com/user/about-web')
             .then((res) => res.json())
             .then((data) => {
                 setAboutWeb(data);
@@ -85,7 +85,7 @@ export default function Home() {
 
         try {
             const token = localStorage.getItem('access_token');
-            const response = await fetch(`http://127.0.0.1:8000/portfolio/${number}`, {
+            const response = await fetch(`https://my-portfolio-ganv.onrender.com/portfolio/${number}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -118,7 +118,7 @@ export default function Home() {
             if (erdFile) erdImgUrl = await uploadImageFile(erdFile);
             if (archFile) archImgUrl = await uploadImageFile(archFile);
 
-            const response = await fetch('http://127.0.0.1:8000/user/about-web', {
+            const response = await fetch('https://my-portfolio-ganv.onrender.com/user/about-web', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({
@@ -146,7 +146,7 @@ export default function Home() {
     const handleSaveAboutMe = async () => {
         try {
             const token = localStorage.getItem('access_token');
-            const res = await fetch('http://127.0.0.1:8000/user/about-me', {
+            const res = await fetch('https://my-portfolio-ganv.onrender.com/user/about-me', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ about_me: editAboutMeText })

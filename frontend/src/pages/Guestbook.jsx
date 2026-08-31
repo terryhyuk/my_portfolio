@@ -12,7 +12,7 @@ export default function Guestbook() {
 
     // 2. Fetch guestbook entries from the backend API (GET)
     const fetchGuestbooks = () => {
-        fetch('http://127.0.0.1:8000/guestbook/')
+        fetch('https://my-portfolio-ganv.onrender.com/guestbook/')
             .then((res) => res.json())
             .then((data) => {
                 setGuestbooks(data);
@@ -36,7 +36,7 @@ export default function Guestbook() {
             return;
         }
 
-        fetch('http://127.0.0.1:8000/guestbook/', {
+        fetch('https://my-portfolio-ganv.onrender.com/guestbook/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

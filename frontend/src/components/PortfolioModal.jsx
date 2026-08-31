@@ -47,8 +47,8 @@ export default function PortfolioModal({ isOpen, onClose, onSuccess, editData })
 
             // 2. Save portfolio data (POST or PUT) to FastAPI backend
             const url = isEditMode
-                ? `http://127.0.0.1:8000/portfolio/${editData.number}`
-                : 'http://127.0.0.1:8000/portfolio/';
+                ? `https://my-portfolio-ganv.onrender.com/portfolio/${editData.number}`
+                : 'https://my-portfolio-ganv.onrender.com/portfolio/';
 
             const method = isEditMode ? 'PUT' : 'POST';
 

@@ -27,7 +27,7 @@ def upload_image(
             
         # 프론트엔드가 접근할 수 있는 정적 파일 URL 반환
         return {
-            "url": f"http://127.0.0.1:8000/static/{file.filename}"
+            "url": f"https://my-portfolio-ganv.onrender.com/static/{file.filename}"
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
