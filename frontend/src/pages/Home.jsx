@@ -53,10 +53,17 @@ export default function Home() {
             .then((data) => { setPortfolios(data); setLoading(false); })
             .catch((err) => { console.error('Portfolio fetch error:', err); setLoading(false); });
 
-        fetch('https://my-portfolio-ganv.onrender.com/visit/')
-            .then((res) => res.json())
-            .then((data) => { setVisitCount(typeof data === 'number' ? data : (data.total || data.length || 0)); })
-            .catch((err) => { console.error('Visit count fetch error:', err); });
+        fetch('https://my-portfolio-ganv.onrender.com/visit/', {
+            method: 'POST',
+        })
+        .then(() => {
+            return fetch('https://my-portfolio-ganv.onrender.com/visit/');
+        })
+        .then((res) => res.json())
+        .then((data) => { 
+            setVisitCount(Array.isArray(data) ? data.length : (data.total || 0)); 
+        })
+        .catch((err) => { console.error('Visit count error:', err); });
 
         fetch('https://my-portfolio-ganv.onrender.com/user/about-web')
             .then((res) => res.json())
