@@ -54,7 +54,7 @@ export default function ProjectsSection({
                             justifyContent: 'space-between'
                         }}>
                             <div>
-                                <PortfolioCard number={item.number} title={item.title} imageUrl={item.image_url} />
+                                <PortfolioCard number={item.number} title={item.title} imageUrl={item.image_url} skill={item.skill} />
                             </div>
                             {isAdmin && (
                                 <div style={{ display: 'flex', gap: '8px', marginTop: '16px', paddingTop: '12px', borderTop: '1px solid #f2f2f2' }}>

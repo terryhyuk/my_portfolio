@@ -24,7 +24,7 @@ export default function Home() {
     const [editingPortfolio, setEditingPortfolio] = useState(null);
 
     // About This Web state (Updated to object structure for JSON parsing)
-    const [aboutWeb, setAboutWeb] = useState({ about_this_web: '', architecture: '', about_this_web_img: '' });
+    const [aboutWeb, setAboutWeb] = useState({ about_this_web: '', architecture: '', about_this_web_img: '', skill: '' });
     const [isEditingAboutWeb, setIsEditingAboutWeb] = useState(false);
     const [erdFile, setErdFile] = useState(null);
     const [archFile, setArchFile] = useState(null);
@@ -33,7 +33,8 @@ export default function Home() {
         whyReact: '',
         whyBackend: '',
         databaseStorage: '',
-        adminAccess: ''
+        adminAccess: '',
+        skill: ''
     });
     
     const [uploading, setUploading] = useState(false);
@@ -71,7 +72,8 @@ export default function Home() {
                         whyReact: parsed.whyReact || '',
                         whyBackend: parsed.whyBackend || '',
                         databaseStorage: parsed.databaseStorage || '',
-                        adminAccess: parsed.adminAccess || ''
+                        adminAccess: parsed.adminAccess || '',
+                        skill: data.skill || ''
                     });
                 } catch (e) {
                     setEditAboutData({
@@ -79,7 +81,8 @@ export default function Home() {
                         whyReact: '',
                         whyBackend: '',
                         databaseStorage: '',
-                        adminAccess: ''
+                        adminAccess: '',
+                        skill: data.skill || ''
                     });
                 }
             })
@@ -145,7 +148,13 @@ export default function Home() {
             if (archFile) archImgUrl = await uploadImageFile(archFile);
 
             // Stringify the data object into a JSON string for the TEXT column
-            const stringifiedContent = JSON.stringify(editAboutData);
+            const stringifiedContent = JSON.stringify({
+                whyBuilt: editAboutData.whyBuilt,
+                whyReact: editAboutData.whyReact,
+                whyBackend: editAboutData.whyBackend,
+                databaseStorage: editAboutData.databaseStorage,
+                adminAccess: editAboutData.adminAccess
+            });
 
             const response = await fetch('https://my-portfolio-ganv.onrender.com/user/about-web', {
                 method: 'PUT',
@@ -153,7 +162,8 @@ export default function Home() {
                 body: JSON.stringify({
                     about_this_web_img: erdImgUrl,
                     architecture: archImgUrl,
-                    about_this_web: stringifiedContent
+                    about_this_web: stringifiedContent,
+                    skill: editAboutData.skill
                 })
             });
 
