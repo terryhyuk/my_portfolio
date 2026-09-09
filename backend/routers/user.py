@@ -1,17 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
-from jose import JWTError, jwt
 from pydantic import BaseModel
 from typing import Optional
 import models, schemas
 from database import get_db
 from .auth import get_current_admin
-
-# --- JWT Configuration ---
-SECRET_KEY = "calmlake_super_secret_key_change_it_later"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
 router = APIRouter(
     prefix="/user",
@@ -31,28 +24,6 @@ class AboutThisWebUpdate(BaseModel):
 class AboutMeUpdate(BaseModel):
     about_me: Optional[str] = None
 
-def create_access_token(data: dict):
-    to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-@router.post("/login")
-def login(payload: schemas.LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.id == payload.id).first()
-    if not user:
-        raise HTTPException(status_code=400, detail="User ID not found.")
-    if user.password != payload.password:
-        raise HTTPException(status_code=400, detail="Incorrect password.")
-    access_token = create_access_token(data={"sub": user.id})
-    return {
-        "message": "Login successful!",
-        "nickname": user.nickname,
-        "access_token": access_token,
-        "token_type": "bearer"
-    }
-
 @router.get("/me", response_model=schemas.UserResponse)
 def get_admin_info(db: Session = Depends(get_db)):
     admin = db.query(models.User).filter(models.User.id == 1).first()
@@ -69,7 +40,7 @@ def get_about_web(db: Session = Depends(get_db)):
         "about_this_web": user.about_this_web,
         "architecture": user.architecture,
         "about_this_web_img": user.about_this_web_img,
-        "about_me": user.about_me,  # <-- 이 줄 추가!
+        "about_me": user.about_me,
         "erd_title": getattr(user, 'erd_title', 'ERD (Entity Relationship Diagram)'),
         "erd_desc": getattr(user, 'erd_desc', '사용자 메타데이터와 방명록 피드 간의 관계를 설계한 정적 정형 데이터 모델입니다.'),
         "arch_title": getattr(user, 'arch_title', 'Architecture Diagram'),

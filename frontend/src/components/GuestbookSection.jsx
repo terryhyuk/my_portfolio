@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Guestbook section component for navigating to the guestbook page
 export default function GuestbookSection({ onNavigateGuestbook }) {
     return (
         <section style={{ paddingBottom: '20px', marginBottom: '20px' }}>

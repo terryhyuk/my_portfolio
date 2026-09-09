@@ -11,6 +11,7 @@ class User(Base):
     about_me = Column(Text)
     about_this_web_img = Column(String(255))
     about_this_web = Column(Text)
+    skill = Column(Text)
     architecture = Column(String(255))
     
     portfolios = relationship("Portfolio", back_populates="user", cascade="all, delete-orphan")
@@ -24,9 +25,12 @@ class Portfolio(Base):
     user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
     title = Column(String(255), nullable=False)
     story = Column(Text)
-    store_link = Column(String(255))
-    created_at = Column(TIMESTAMP, server_default=func.now())
     image_url = Column(String(255))
+    ios_link = Column(String(255))
+    android_link = Column(String(255))
+    skill = Column(Text)
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    
     user = relationship("User", back_populates="portfolios")
 
 class VisitLog(Base):
@@ -45,8 +49,9 @@ class Guestbook(Base):
     guest_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
     name = Column(String(100), nullable=False)
+    user_pw = Column(String(255), nullable=False)
     content = Column(Text, nullable=False)
-    created_at = Column(TIMESTAMP, server_default=func.now())
     reply = Column(Text)
+    created_at = Column(TIMESTAMP, server_default=func.now())
     
     user = relationship("User", back_populates="guestbooks")

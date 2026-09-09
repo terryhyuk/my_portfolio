@@ -22,6 +22,7 @@ def create_guestbook(payload: schemas.GuestbookCreate, db: Session = Depends(get
     new_guestbook = models.Guestbook(
         user_id=1,  # Default to admin user (ID: 1)
         name=payload.name,
+        user_pw=payload.user_pw,
         content=payload.content
     )
     db.add(new_guestbook)
