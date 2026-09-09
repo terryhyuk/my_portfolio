@@ -22,11 +22,13 @@ export default function PortfolioDetail() {
             });
     }, [id]);
 
-    if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>로딩 중...</div>;
-    if (!portfolio) return <div style={{ padding: '40px', textAlign: 'center' }}>해당 포트폴리오를 찾을 수 없습니다.</div>;
+    if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>;
+    if (!portfolio) return <div style={{ padding: '40px', textAlign: 'center' }}>No matching portfolio found.</div>;
 
-    // ios_link나 android_link 중 하나라도 존재할 때만 링크 버튼 영역을 노출
+    // if hasStoreLinks, show download button
     const hasStoreLinks = portfolio.ios_link || portfolio.android_link;
+
+    const skillList = portfolio.skill ? portfolio.skill.split(',').map(s => s.trim()).filter(Boolean) : [];
 
     return (
         <div style={{ padding: '40px', maxWidth: '800px', margin: '0 auto', fontFamily: 'sans-serif' }}>
@@ -37,7 +39,7 @@ export default function PortfolioDetail() {
                 ← Back to Home
             </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '30px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '20px' }}>
                 <div style={{
                     width: '80px',
                     height: '80px',
@@ -60,7 +62,23 @@ export default function PortfolioDetail() {
                 </div>
             </div>
 
-            {/* 링크가 있을 때만 스토어 버튼 영역 렌더링 (웹처럼 비워두면 아예 출력 안 함) */}
+            {skillList.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '25px' }}>
+                    {skillList.map((tech, idx) => (
+                        <span key={idx} style={{ 
+                            fontSize: '13px', 
+                            background: '#f1f3f5', 
+                            color: '#495057', 
+                            padding: '4px 10px', 
+                            borderRadius: '6px',
+                            fontWeight: '600'
+                        }}>
+                            {tech}
+                        </span>
+                    ))}
+                </div>
+            )}
+
             {hasStoreLinks && (
                 <div style={{ display: 'flex', gap: '12px', marginBottom: '40px' }}>
                     {portfolio.ios_link && (
@@ -121,11 +139,14 @@ export default function PortfolioDetail() {
 //     if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>로딩 중...</div>;
 //     if (!portfolio) return <div style={{ padding: '40px', textAlign: 'center' }}>해당 포트폴리오를 찾을 수 없습니다.</div>;
 
+//     // ios_link나 android_link 중 하나라도 존재할 때만 링크 버튼 영역을 노출
+//     const hasStoreLinks = portfolio.ios_link || portfolio.android_link;
+
 //     return (
 //         <div style={{ padding: '40px', maxWidth: '800px', margin: '0 auto', fontFamily: 'sans-serif' }}>
 //             <button
 //                 onClick={() => navigate('/')}
-//                 style={{ marginBottom: '20px', cursor: 'pointer', padding: '8px 16px' }}
+//                 style={{ marginBottom: '20px', cursor: 'pointer', padding: '8px 16px', background: '#f0f0f0', border: 'none', borderRadius: '6px', fontWeight: '600' }}
 //             >
 //                 ← Back to Home
 //             </button>
@@ -153,24 +174,31 @@ export default function PortfolioDetail() {
 //                 </div>
 //             </div>
 
-//             <div style={{ display: 'flex', gap: '12px', marginBottom: '40px' }}>
-//                 <a
-//                     href={portfolio.store_link || "https://apps.apple.com"}
-//                     target="_blank"
-//                     rel="noreferrer"
-//                     style={{ padding: '12px 24px', background: '#000', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: '500' }}
-//                 >
-//                     App Store
-//                 </a>
-//                 <a
-//                     href={portfolio.store_link || "https://play.google.com"}
-//                     target="_blank"
-//                     rel="noreferrer"
-//                     style={{ padding: '12px 24px', background: '#0f9d58', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: '500' }}
-//                 >
-//                     Google Play
-//                 </a>
-//             </div>
+//             {/* 링크가 있을 때만 스토어 버튼 영역 렌더링 (웹처럼 비워두면 아예 출력 안 함) */}
+//             {hasStoreLinks && (
+//                 <div style={{ display: 'flex', gap: '12px', marginBottom: '40px' }}>
+//                     {portfolio.ios_link && (
+//                         <a
+//                             href={portfolio.ios_link}
+//                             target="_blank"
+//                             rel="noreferrer"
+//                             style={{ padding: '12px 24px', background: '#000', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: '500' }}
+//                         >
+//                             App Store
+//                         </a>
+//                     )}
+//                     {portfolio.android_link && (
+//                         <a
+//                             href={portfolio.android_link}
+//                             target="_blank"
+//                             rel="noreferrer"
+//                             style={{ padding: '12px 24px', background: '#0f9d58', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: '500' }}
+//                         >
+//                             Google Play
+//                         </a>
+//                     )}
+//                 </div>
+//             )}
 
 //             <hr style={{ border: '0', borderTop: '1px solid #eee', marginBottom: '40px' }} />
 
