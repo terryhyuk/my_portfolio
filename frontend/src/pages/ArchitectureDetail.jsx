@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function ArchitectureDetail() {
     const navigate = useNavigate();
-    const [aboutWeb, setAboutWeb] = useState({ about_this_web: '', architecture: '', about_this_web_img: '' });
+    const [aboutWeb, setAboutWeb] = useState({ about_this_web: '', architecture: '', about_this_web_img: '', skill: '' });
     const [loading, setLoading] = useState(true);
     const [modalImage, setModalImage] = useState(null);
 
@@ -28,6 +28,9 @@ export default function ArchitectureDetail() {
         parsedContent = { whyBuilt: aboutWeb.about_this_web || "" };
     }
 
+    // Split skill string into an array
+    const skillList = aboutWeb.skill ? aboutWeb.skill.split(',').map(s => s.trim()).filter(Boolean) : [];
+
     if (loading) return <div style={{ padding: '60px', textAlign: 'center' }}>Loading...</div>;
 
     return (
@@ -40,9 +43,27 @@ export default function ArchitectureDetail() {
             </button>
 
             <h1 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '8px', color: '#111' }}>Web Architecture & System Design</h1>
-            <p style={{ color: '#666', fontSize: '14px', marginBottom: '32px' }}>Detailed technical breakdown of how this portfolio website was planned, structured, and built.</p>
+            <p style={{ color: '#666', fontSize: '14px', marginBottom: '16px' }}>Detailed technical breakdown of how this portfolio website was planned, structured, and built.</p>
 
-            {/* 다이어그램 이미지 영역 (클릭 시 확대) */}
+            {/* Tech Stack Badges */}
+            {skillList.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '32px' }}>
+                    {skillList.map((tech, idx) => (
+                        <span key={idx} style={{ 
+                            fontSize: '12px', 
+                            background: '#e9ecef', 
+                            color: '#343a40', 
+                            padding: '4px 10px', 
+                            borderRadius: '6px',
+                            fontWeight: '600'
+                        }}>
+                            {tech}
+                        </span>
+                    ))}
+                </div>
+            )}
+
+            {/* Diagram Image Area */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '40px' }}>
                 <div style={{ border: '1px solid #eaeaea', borderRadius: '12px', padding: '16px', background: '#fff' }}>
                     <span style={{ fontSize: '11px', fontWeight: '700', color: '#00875a', display: 'block', marginBottom: '10px' }}>DATA SCHEMA (ERD) - Click to enlarge</span>
@@ -75,7 +96,7 @@ export default function ArchitectureDetail() {
                 </div>
             </div>
 
-            {/* detail */}
+            {/* Detail Content */}
             <div style={{ border: '1px solid #eaeaea', borderRadius: '12px', padding: '32px', background: '#fff', display: 'flex', flexDirection: 'column', gap: '28px' }}>
                 {parsedContent.whyBuilt && (
                     <div>

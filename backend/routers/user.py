@@ -20,6 +20,7 @@ class AboutThisWebUpdate(BaseModel):
     erd_desc: Optional[str] = None
     arch_title: Optional[str] = None
     arch_desc: Optional[str] = None
+    skill: Optional[str] = None 
 
 class AboutMeUpdate(BaseModel):
     about_me: Optional[str] = None
@@ -42,9 +43,10 @@ def get_about_web(db: Session = Depends(get_db)):
         "about_this_web_img": user.about_this_web_img,
         "about_me": user.about_me,
         "erd_title": getattr(user, 'erd_title', 'ERD (Entity Relationship Diagram)'),
-        "erd_desc": getattr(user, 'erd_desc', '사용자 메타데이터와 방명록 피드 간의 관계를 설계한 정적 정형 데이터 모델입니다.'),
+        "erd_desc": getattr(user, 'erd_desc', 'Loading ERD description...'),
         "arch_title": getattr(user, 'arch_title', 'Architecture Diagram'),
-        "arch_desc": getattr(user, 'arch_desc', 'React 기반의 선언적 UI 구조와 최적화된 정적 렌더링 파이프라인 흐름입니다.')
+        "arch_desc": getattr(user, 'arch_desc', 'Loading architecture description...'),
+        "skill": getattr(user, 'skill', 'React, FastAPI, PostgreSQL')  # Return skill data
     }
 
 @router.put("/about-web")
@@ -71,6 +73,8 @@ def update_about_web(
         user.arch_title = payload.arch_title
     if payload.arch_desc is not None and hasattr(user, 'arch_desc'):
         user.arch_desc = payload.arch_desc
+    if payload.skill is not None and hasattr(user, 'skill'):
+        user.skill = payload.skill
         
     db.commit()
     db.refresh(user)

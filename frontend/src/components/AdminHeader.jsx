@@ -12,7 +12,6 @@ export default function AdminHeader() {
         window.location.reload();
     };
 
-    // 로그인된 상태가 아니면 우측 상단에 아무것도 띄우지 않음 (방문자 수 자리를 지켜야 하니까!)
     if (!isLoggedIn) {
         return null;
     }

@@ -42,3 +42,11 @@ yarn-debug.log*
 # --- Environment Variables ---
 .env
 .env.local
+
+# --- Database Files ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- Logs ---
+*.log
