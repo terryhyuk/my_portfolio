@@ -11,12 +11,17 @@ export default function Guestbook() {
     const [userPw, setUserPw] = useState('');
     const [loading, setLoading] = useState(true);
 
+    // Edit state for specific entry
+    const [editingId, setEditingId] = useState(null);
+    const [editContent, setEditContent] = useState('');
+    const [editUserPw, setEditUserPw] = useState('');
+
+    // Check if user is logged in as admin
+    const isAdmin = !!localStorage.getItem('access_token');
+
     // 2. Fetch guestbook entries from the backend API (GET)
     const fetchGuestbooks = () => {
-        fetch(
-            // 'http://localhost:8000/guestbook/', // local
-            'https://my-portfolio-ganv.onrender.com/guestbook/'
-        )
+        fetch('https://my-portfolio-ganv.onrender.com/guestbook/')
             .then((res) => res.json())
             .then((data) => {
                 setGuestbooks(data);
@@ -45,17 +50,74 @@ export default function Guestbook() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            // Matching backend schema field: user_pw
             body: JSON.stringify({ name, content, user_pw: userPw }),
         })
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) throw new Error('Failed to create entry');
+                return res.json();
+            })
             .then(() => {
                 setName('');
                 setContent('');
                 setUserPw('');
-                fetchGuestbooks(); // Refresh the entry list
+                fetchGuestbooks();
             })
             .catch((err) => console.error('Error creating guestbook entry:', err));
+    };
+
+    // 4. Handle Delete (Admin Only, requires JWT)
+    const handleDelete = (guestId) => {
+        if (!window.confirm('Are you sure you want to delete this entry?')) return;
+
+        const token = localStorage.getItem('access_token');
+        fetch(`https://my-portfolio-ganv.onrender.com/guestbook/${guestId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error('Failed to delete');
+                fetchGuestbooks();
+            })
+            .catch((err) => {
+                console.error('Error deleting guestbook:', err);
+                alert('Failed to delete entry.');
+            });
+    };
+
+    // 5. Handle Update (Author verification via user_pw)
+    const handleUpdate = (guestId) => {
+        if (!editContent || !editUserPw) {
+            alert('Please enter your message and password to update!');
+            return;
+        }
+
+        fetch(`https://my-portfolio-ganv.onrender.com/guestbook/${guestId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_pw: editUserPw, content: editContent }),
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    if (res.status === 403) throw new Error('Incorrect password.');
+                    throw new Error('Failed to update');
+                }
+                return res.json();
+            })
+            .then(() => {
+                setEditingId(null);
+                setEditContent('');
+                setEditUserPw('');
+                fetchGuestbooks();
+                alert('Successfully updated!');
+            })
+            .catch((err) => {
+                console.error('Error updating guestbook:', err);
+                alert(err.message === 'Incorrect password.' ? 'Incorrect password!' : 'Failed to update entry.');
+            });
     };
 
     return (
@@ -109,8 +171,65 @@ export default function Guestbook() {
             ) : (
                 guestbooks.map((item) => (
                     <div key={item.guest_id} style={{ borderBottom: '1px solid #eaeaea', padding: '20px 0' }}>
-                        <div style={{ fontWeight: 'bold', marginBottom: '6px', fontSize: '15px' }}>{item.name}</div>
-                        <p style={{ margin: '0 0 10px 0', color: '#333', lineHeight: '1.6' }}>{item.content}</p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                            <span style={{ fontWeight: 'bold', fontSize: '15px' }}>{item.name}</span>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                                {/* Edit Button for Author */}
+                                <button
+                                    onClick={() => {
+                                        if (editingId === item.guest_id) {
+                                            setEditingId(null);
+                                        } else {
+                                            setEditingId(item.guest_id);
+                                            setEditContent(item.content);
+                                            setEditUserPw('');
+                                        }
+                                    }}
+                                    style={{ fontSize: '12px', padding: '4px 8px', background: '#f0f0f0', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                                >
+                                    {editingId === item.guest_id ? 'Cancel' : 'Edit'}
+                                </button>
+
+                                {/* Delete Button - Admin Only */}
+                                {isAdmin && (
+                                    <button
+                                        onClick={() => handleDelete(item.guest_id)}
+                                        style={{ fontSize: '12px', padding: '4px 8px', background: '#ffebee', color: '#c62828', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                                    >
+                                        Delete
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Edit Mode / Normal Mode Toggle */}
+                        {editingId === item.guest_id ? (
+                            <div style={{ marginTop: '10px', padding: '12px', background: '#f9f9f9', borderRadius: '8px', border: '1px solid #ddd' }}>
+                                <textarea
+                                    value={editContent}
+                                    onChange={(e) => setEditContent(e.target.value)}
+                                    style={{ width: '100%', padding: '8px', height: '80px', boxSizing: 'border-box', border: '1px solid #ccc', borderRadius: '6px', marginBottom: '8px', fontSize: '14px' }}
+                                />
+                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                    <input
+                                        type="password"
+                                        placeholder="Enter password to confirm"
+                                        value={editUserPw}
+                                        onChange={(e) => setEditUserPw(e.target.value)}
+                                        style={{ padding: '8px', flex: 1, border: '1px solid #ccc', borderRadius: '6px', fontSize: '14px' }}
+                                    />
+                                    <button
+                                        onClick={() => handleUpdate(item.guest_id)}
+                                        style={{ padding: '8px 16px', background: '#00875a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '13px' }}
+                                    >
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <p style={{ margin: '0 0 10px 0', color: '#333', lineHeight: '1.6' }}>{item.content}</p>
+                        )}
+
                         {item.reply && (
                             <div style={{ background: '#f4f6f5', padding: '12px', borderRadius: '8px', marginTop: '10px', fontSize: '14px', color: '#00875a' }}>
                                 └ <strong>Reply:</strong> {item.reply}

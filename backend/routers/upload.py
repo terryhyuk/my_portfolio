@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 import shutil
 import os
-from .auth import get_current_admin  # 관리자만 업로드할 수 있게 하려면 추가!
+from .auth import get_current_admin  # only admin can upload
 
 router = APIRouter(
     prefix="/upload",
@@ -17,7 +17,7 @@ if not os.path.exists(UPLOAD_DIR):
 @router.post("/")
 def upload_image(
     file: UploadFile = File(...),
-    admin_id: str = Depends(get_current_admin) # 관리자 인증 필요 시 유지, 아니면 이 줄 삭제 가능
+    admin_id: str = Depends(get_current_admin) 
 ):
     try:
         # 파일 경로 설정
