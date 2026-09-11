@@ -3,7 +3,7 @@
 A full-stack personal portfolio website built to showcase and manage my development projects.
 
 🔗 **Live:** [terryyoon.vercel.app](https://terryyoon.vercel.app/)
-
+> 💡 **Note:** The initial load may take a little longer due to free-tier hosting.
 ---
 
 ## 🛠 Tech Stack
@@ -12,7 +12,6 @@ A full-stack personal portfolio website built to showcase and manage my developm
 
 - **React**
 - **JavaScript**
-- **Vercel** — Frontend deployment
 
 ### Backend
 
